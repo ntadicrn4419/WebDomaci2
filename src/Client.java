@@ -20,7 +20,7 @@ public class Client{
             e.printStackTrace();
         }
 
-        String userName = login(in, out);
+        String userName = login(in, out, socket);
 
         Thread writer = new Thread(new ClientWriter(out, userName));
         Thread reader = new Thread(new ClientReader(in));
@@ -55,7 +55,7 @@ public class Client{
             }
         }
     }
-    public static String login(BufferedReader in, PrintWriter out){
+    public static String login(BufferedReader in, PrintWriter out, Socket socket){
 
         Scanner scanner = new Scanner(System.in);
         String response = "";

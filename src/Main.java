@@ -12,11 +12,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class Main {
 
     public static final int PORT = 9000;
+
     public static Set<String> clients = new CopyOnWriteArraySet<>();
     public static List<String> messages = new CopyOnWriteArrayList<>();
+
     public static List<Socket> clientSockets = new ArrayList<>();
     public static List<PrintWriter> clientOutputStreams = new ArrayList<>();
-    public static List<String> censoredWords = new ArrayList<>();
+
+    private static List<String> censoredWords = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -35,7 +38,7 @@ public class Main {
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                 clientOutputStreams.add(out);
 
-                Thread serverThread = new Thread(new Server(socket));
+                Thread serverThread = new Thread(new Server(socket, censoredWords));
                 serverThread.start();
             }
         } catch (IOException e) {

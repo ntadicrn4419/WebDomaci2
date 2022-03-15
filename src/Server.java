@@ -1,23 +1,28 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Server implements Runnable{
-    private Socket socket;
 
-    public Server(Socket socket) {
+    private Socket socket;
+    private List<String> censoredWords;
+
+    public Server(Socket socket, List<String> censoredWords) {
         this.socket = socket;
+        this.censoredWords = censoredWords;
     }
     @Override
     public void run() {
         BufferedReader in = null;
         PrintWriter out = null;
+        String clientUserName;
+        String message;
 
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-            String clientUserName;
-            String message;
 
             //logovanje klijenta
             clientUserName = this.userLogin(in, out);
@@ -58,7 +63,7 @@ public class Server implements Runnable{
         String clientUserName = "";
         while (true) {
             clientUserName = in.readLine();
-            if(Main.clients.add(clientUserName)){//ako taj clientUserName ne postoji vec u clients, dodace ga i vratice true, u suprotnom vratice false
+            if(clientUserName != "" && clientUserName != null && Main.clients.add(clientUserName)){//ako taj clientUserName ne postoji vec u clients, dodace ga i vratice true, u suprotnom vratice false
                 out.println("Uspesno ste se ulogovali.");
                 break;
             }else{
@@ -76,11 +81,9 @@ public class Server implements Runnable{
                 e.printStackTrace();
             }
         }
-
         if (out != null) {
             out.close();
         }
-
         if (this.socket != null) {
             try {
                 socket.close();
@@ -93,10 +96,8 @@ public class Server implements Runnable{
         String[] words = msg.split(" ");
         StringBuilder checked = new StringBuilder();
         char[] ch;
-        char first;
-        char last;
         for(String word: words){
-            if(Main.censoredWords.contains(word)){
+            if(this.censoredWords.contains(word.toLowerCase())){
                 ch = word.toCharArray();
                 for(int i = 1; i < ch.length-1; i++){
                     ch[i] = '*';
