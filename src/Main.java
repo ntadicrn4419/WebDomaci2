@@ -34,9 +34,9 @@ public class Main {
                 Socket socket = serverSocket.accept();
                 System.out.println("Server primio konekciju");
 
-                clientSockets.add(socket);
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-                clientOutputStreams.add(out);
+//                clientSockets.add(socket);
+//                PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+//                clientOutputStreams.add(out);
 
                 Thread serverThread = new Thread(new Server(socket, censoredWords));
                 serverThread.start();
@@ -56,5 +56,10 @@ public class Main {
         for(PrintWriter out: clientOutputStreams){
             out.println(message);
         }
+    }
+    public static synchronized void addSocket(Socket socket) throws IOException {
+        clientSockets.add(socket);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+        clientOutputStreams.add(out);
     }
 }

@@ -27,6 +27,9 @@ public class Server implements Runnable{
             //logovanje klijenta
             clientUserName = this.userLogin(in, out);
 
+            //dodavanje u listu socket-a
+            Main.addSocket(socket);
+
             //obavastavanje ostalih klijenata da se novi prikljucio
             Main.notifyClients(clientUserName, this.socket);
 
